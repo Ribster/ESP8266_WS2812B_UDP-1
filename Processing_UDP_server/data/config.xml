@@ -1,9 +1,9 @@
 <config defaultEffect="0">
 
-    <mqtt address="mqtt://192.168.100.131" name="processing" />
+    <!--<mqtt address="mqtt://192.168.100.131" name="processing" /> -->
     
     <devices>
-        <device address="192.168.100.101" length="216" x="0" y="0" />
+        <device address="192.168.0.212" length="300" x="0" y="0" />
     </devices>
     
     <!-- This is some kind of "playlist" where you can make list of your
