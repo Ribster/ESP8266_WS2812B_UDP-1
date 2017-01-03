@@ -1,9 +1,14 @@
 /*
-http://pixelinvaders.ch/?page_id=160
-http://www.live-leds.de/features/ Jinx! – LED Matrix Control
-http://www.lightjams.com/sacn.html
-http://www.lightjams.com/getIt.html
 
+  This is Processing application to render and stream effect over UDP
+  to the light devices. Right now the ESP8266 is supported.
+
+  Author: Martin Hubacek
+          martinhubacek.cz
+          youtube.com/hubmartin
+          @hubmartin
+  
+  License: MIT
 
 */
 
@@ -26,8 +31,20 @@ public class NetworkDevice
 ArrayList<NetworkDevice> deviceList = new ArrayList<NetworkDevice>();
 
 
+//
+// Add new effect here, then add their string name to the <effects> element in data/config.xml
+//
+Effect[] effect = { new EffectPlasma(), new EffectDots(), new EffectSoundLevel() };
+
+
+EffectManager em;
+
+
+
+
 
 void setup() {
+<<<<<<< HEAD
   size(900, 200);
   plasmaSetup();
   dotsInit();
@@ -106,39 +123,85 @@ void draw() {
   
   
   udpSend();
+=======
+  
+  // solve error libgles2-mesa
+  // failed to open swrast
+  // EGLGLXDrawableFactory
+  size(900, 200, P2D);
+  
+  frameRate(25);
+    
+  // Init ESP UDP streaming
+  espLibInit();
+  
+  em = new EffectManager(effect);
+  
+  em.init();
+  
+ 
 }
 
-void colorSet(color c)
-{
-  effect = 7;
-  background(c);
+int actualEffect = 0;
+
+//process events
+void draw() {
+  
+  em.draw();
+
+  espLibSend();
+  
+    //background(0);
+  // draw the waveforms
+  /*
+  for(int i = 0; i < in.bufferSize() - 1; i++)
+  {
+    stroke((1+in.left.get(i))*50,100,100);
+    line(i, 50 + in.left.get(i)*50, i+1, 50 + in.left.get(i+1)*50);
+    stroke(white);
+    line(i, 150 + in.right.get(i)*50, i+1, 150 + in.right.get(i+1)*50);
+  }*/
+  
+  
+  
+  
+  //println(in.getGain());  
+>>>>>>> 8e73b9cd1e4219a9d30a25e7e49c64fbf2f34d25
 }
 
+
+<<<<<<< HEAD
 void effectNext()
 {
  effect++;
 }
+=======
+>>>>>>> 8e73b9cd1e4219a9d30a25e7e49c64fbf2f34d25
 
-void effectPrev()
-{
-  effect--;
-}
 
-void effectSet(int i)
+
+void colorSet(color c)
 {
-  effect = i;
+  actualEffect = 7;
+  background(c);
 }
 
 void keyPressed()
 {
  switch(key)
  {
+    case '+':
     case 'a':
-    effect++;
+    em.next();
     break;
+<<<<<<< HEAD
 
+=======
+    
+    case '-':
+>>>>>>> 8e73b9cd1e4219a9d30a25e7e49c64fbf2f34d25
     case 's':
-    effect--;
+    em.prev();
     break;
 
     case 'd':
@@ -166,4 +229,8 @@ void keyPressed()
     println("Led bar scrolling up/down");
   }
  
+<<<<<<< HEAD
+=======
+ 
+>>>>>>> 8e73b9cd1e4219a9d30a25e7e49c64fbf2f34d25
 }

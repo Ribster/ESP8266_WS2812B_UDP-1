@@ -6,8 +6,13 @@ import mqtt.*;
 
 UDP udp;  // define the UDP object
 int port        = 8000;    // the destination port
+<<<<<<< HEAD
 
 MQTTClient client;
+=======
+    
+MQTTClient mqttClient;
+>>>>>>> 8e73b9cd1e4219a9d30a25e7e49c64fbf2f34d25
 
 void mouseDragged()
 {
@@ -16,6 +21,7 @@ void mouseDragged()
   device.positionOffset.y = mouseY;
 }
 
+<<<<<<< HEAD
 void udpInit()
 {
   udp = new UDP( this );
@@ -40,9 +46,55 @@ void messageReceived(String topic, byte[] payload) {
   if(topic.equals("/effect/prev"))
     effectPrev();
 
+=======
+void loadConfig()
+{
+  XML xml = loadXML("config.xml");
+  
+
+  //effectSet(xml.getInt("defaultEffect"));
+  println("def eff:" + xml.getInt("defaultEffect"));
+  
+  XML[] mqtt = xml.getChildren("mqtt");
+  if(mqtt.length > 0)
+  {
+    XML m = mqtt[0];
+    mqttClient.connect(m.getString("address"), m.getString("name"));
+    mqttClient.subscribe("/effect/#");
+  }
+  
+  XML[] devices = xml.getChildren("devices");
+  XML[] device = devices[0].getChildren("device"); //<>//
+  
+  println("Devices:" + device.length);
+  
+  for(XML d : device)
+  {
+    deviceList.add(new NetworkDevice(d.getString("address"), d.getInt("length") , d.getInt("y")));
+  }
+}
+  
+    
+void espLibInit()
+{
+  udp = new UDP( this );
+  mqttClient = new MQTTClient(this);
+  
+  loadConfig();
+}
+
+void messageReceived(String topic, byte[] payload) {
+  
+  if(topic.equals("/effect/next")) //<>//
+    em.next();
+    
+  if(topic.equals("/effect/prev"))
+    em.prev();
+    
+>>>>>>> 8e73b9cd1e4219a9d30a25e7e49c64fbf2f34d25
   if(topic.equals("/effect/set"))
   {
-    effectSet(Integer.parseInt(new String(payload)));
+    em.set(Integer.parseInt(new String(payload)));
   }
 
   if(topic.equals("/effect/rgb"))
@@ -52,6 +104,7 @@ void messageReceived(String topic, byte[] payload) {
 
   println("new message: ." + topic + ". - " + new String(payload));
 }
+<<<<<<< HEAD
 
 void udpSend() //<>//
 {
@@ -73,6 +126,33 @@ void udpSend() //<>//
 
   sendData(device, pix);
 
+=======
+    
+void espLibSend()
+{
+  
+  
+  for(NetworkDevice device : deviceList)
+  {
+  
+    color pix[] = new color[device.ledCount];
+     
+    for(int i = 0; i < pix.length; i++)
+    {
+        //pix[i] = pixels[i * 5];
+        float x = device.positionOffset.x + device.positionIncrement.x * i;
+        float y = device.positionOffset.y + device.positionIncrement.y * i;
+        //pix[i] = get((int)x, (int)y);
+        pix[i] = pixels[(int)x + (int)y * width];
+        
+        //noFill();
+        // Debug visualization of output LED strips
+        //ellipse(x, y + 10, 2, 2);
+    }
+    
+    sendData(device, pix);
+  
+>>>>>>> 8e73b9cd1e4219a9d30a25e7e49c64fbf2f34d25
   }
 
 }
